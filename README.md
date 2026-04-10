@@ -2,6 +2,10 @@
 
 A production-ready Kanban board with real-time collaboration, JWT auth, RBAC, Socket.io, bcrypt, and MongoDB Atlas.
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Node.js](https://img.shields.io/badge/Backend-Node.js-green)
+![React](https://img.shields.io/badge/Frontend-React-blue)
+
 ---
 
 ## 🎥 Demo
