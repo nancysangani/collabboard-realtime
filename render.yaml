@@ -3,9 +3,8 @@ services:
     name: collabboard-server
     runtime: node
     plan: free
-    buildCommand: |
-      cd client && npm install && npm run build && cd .. && npm install --prefix server
-    startCommand: npm --prefix server start
+    buildCommand: cd client && npm install && npm run build
+    startCommand: cd server && npm install && npm start
     envVars:
       - key: NODE_ENV
         value: production

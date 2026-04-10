@@ -80,14 +80,21 @@ app.use("/api/cards", cardRoutes);
 app.get("/api/health", (_, res) => res.json({ status: "ok" }));
 
 // Serve React build (production)
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/dist")));
+const clientBuildPath = path.join(__dirname, "../client/dist");
+const isProduction = process.env.NODE_ENV === "production";
+
+logger.info(`NODE_ENV: ${process.env.NODE_ENV}`);
+logger.info(`Serving static files from: ${clientBuildPath}`);
+logger.info(`Is Production: ${isProduction}`);
+
+if (isProduction) {
+  app.use(express.static(clientBuildPath));
 
   app.get("*", (req, res) => {
-    res.sendFile(
-      path.resolve(__dirname, "../client/dist/index.html")
-    );
+    res.sendFile(path.resolve(clientBuildPath, "index.html"));
   });
+} else {
+  logger.info("Not in production mode - not serving React app");
 }
 
 // Socket.io
