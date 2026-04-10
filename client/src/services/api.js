@@ -1,8 +1,18 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 
+// Determine API base URL
+const getBaseURL = () => {
+  // In development, use VITE_API_URL from env
+  if (import.meta.env.DEV) {
+    return `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api`;
+  }
+  // In production, use relative path (same origin)
+  return "/api";
+};
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: getBaseURL(),
   timeout: 10000,
 });
 
