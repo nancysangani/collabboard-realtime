@@ -1,0 +1,10 @@
+FROM node:20
+
+WORKDIR /app
+
+COPY server/package*.json ./server/
+RUN cd server && npm install
+
+WORKDIR /app/server
+
+CMD ["npm", "run", "dev"]
