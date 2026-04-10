@@ -10,7 +10,11 @@ A production-ready Kanban board with real-time collaboration, JWT auth, RBAC, So
 
 ## 🎥 Demo
 
-Live Demo: 
+**Live Demo:** [https://collabboard-realtime-nwpq.onrender.com](https://collabboard-realtime-nwpq.onrender.com)
+
+**Test Account:** 
+- Email: `admin@gmail.com`
+- Password: `Admin@123`
 
 ---
 
@@ -23,12 +27,25 @@ Live Demo:
 | Real-time | Socket.io (client + server) |
 | HTTP client | Axios |
 | Backend | Node.js, Express |
-| Auth | JWT (jsonwebtoken) + bcrypt |
+| Auth | JWT (jsonwebtoken) + bcryptjs |
 | Access Control | Role-based (Admin / Manager / Developer) |
 | Database | MongoDB Atlas (Mongoose) |
 | Env vars | dotenv |
 | Notifications | react-hot-toast |
 | Icons | lucide-react |
+
+---
+
+## 🎯 Key Highlights
+
+✅ **Real-time Collaboration** — Socket.io room-based broadcasting for instant card sync across all connected users  
+✅ **Role-Based Access Control (RBAC)** — 3 roles (Admin/Manager/Developer) with middleware-enforced permissions on 12+ endpoints  
+✅ **Optimistic UI + Server Reconciliation** — Drag-and-drop with instant client feedback, no blocking on server updates  
+✅ **Secure Authentication** — JWT (7-day expiry) + bcrypt password hashing (12 salt rounds)  
+✅ **MongoDB Relational Data** — Mongoose with populated references (User → Project → Board → Card)  
+✅ **Production Deployment** — Docker containerized, deployed on Render, environment-based configuration  
+✅ **Error Handling & UX** — Session expiry detection, auto-redirect, toast notifications, form validation  
+✅ **Scalable Architecture** — Modular folder structure, separated concerns (routes, middleware, models, socket handlers)
 
 ---
 
@@ -200,16 +217,6 @@ Go to http://localhost:5173
 
 ---
 
-## ✨ Features
-
-- Built real-time Kanban board with Socket.io room-based broadcasting; card updates sync across all connected clients instantly
-- Implemented JWT authentication with 7-day expiry and bcrypt password hashing (12 salt rounds)
-- Designed role-based access control (Admin/Manager/Developer) enforced at middleware level across 12+ API endpoints
-- Modeled relational data in MongoDB Atlas using Mongoose with populated references across User, Project, Board, and Card collections
-- Built drag-and-drop with optimistic UI updates and server reconciliation to handle concurrent edits
-
----
-
 ## 🔐 Security
 
 - Passwords hashed using bcrypt
@@ -228,11 +235,66 @@ Go to http://localhost:5173
 
 ---
 
-## 🐳 Docker
+## 🐳 Docker & Local Development
 
+### Development (Local)
 ```bash
-docker-compose up --build
+# Terminal 1: Backend with MongoDB
+docker-compose up
+
+# Terminal 2: Frontend
+cd client
+npm run dev
 ```
+
+Visit: http://localhost:5173
+
+### Production (Docker)
+
+**Build:**
+```bash
+docker build -t collabboard .
+```
+
+**Run with environment file:**
+```bash
+docker run -p 5000:5000 --env-file .env.production collabboard
+```
+
+Or pass variables directly:
+```bash
+docker run -p 5000:5000 \
+  -e NODE_ENV=production \
+  -e MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/collabboard \
+  -e JWT_SECRET=your_secret_key \
+  -e JWT_EXPIRES_IN=7d \
+  -e CLIENT_URL=https://your-domain.com \
+  collabboard
+```
+
+---
+
+## 🚀 Deployment (Render.com)
+
+### Steps
+1. Push code to GitHub
+2. Create new service on [Render.com](https://render.com)
+3. Connect your GitHub repository
+4. Set environment variables:
+   ```
+   NODE_ENV=production
+   MONGO_URI=<your_mongodb_uri>
+   JWT_SECRET=<32_char_secret>
+   JWT_EXPIRES_IN=7d
+   CLIENT_URL=<your_render_url>
+   PORT=5000
+   ```
+5. Deploy!
+
+The app automatically serves:
+- React frontend from `/`
+- API endpoints from `/api/*`
+- Static files with proper caching
 
 ---
 
