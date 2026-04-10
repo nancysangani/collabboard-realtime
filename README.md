@@ -104,22 +104,42 @@ collabboard/
 
 ---
 
-## Quick Start
+## 🚀 Getting Started
 
-### 1. MongoDB Atlas Setup
+### Prerequisites
+- Node.js 18+ 
+- Docker & Docker Compose (optional)
+- MongoDB Atlas account
+
+### Option 1: Quick Start with Docker (Recommended)
+
+```bash
+# Backend + MongoDB (in one command)
+docker-compose up
+
+# Frontend (in another terminal)
+cd client
+npm run dev
+```
+
+Visit: http://localhost:5173
+
+### Option 2: Manual Setup
+
+**Step 1: MongoDB Atlas**
 1. Go to https://cloud.mongodb.com → Create free cluster
 2. Create a database user (username + password)
 3. Whitelist your IP (or use 0.0.0.0/0 for dev)
 4. Copy the connection string
 
-### 2. Server Setup
+**Step 2: Server Setup**
 
 ```bash
 cd server
 npm install
 ```
 
-Edit `server/.env`:
+Create `server/.env`:
 ```env
 PORT=5000
 MONGO_URI=mongodb+srv://<user>:<password>@cluster0.mongodb.net/collabboard?retryWrites=true&w=majority
@@ -132,26 +152,17 @@ CLIENT_URL=http://localhost:5173
 npm run dev    # starts with nodemon on port 5000
 ```
 
-### 3. Client Setup
+**Step 3: Client Setup**
 
 ```bash
 cd client
 npm install
-```
-
-`client/.env` is already set to:
-```env
-VITE_API_URL=http://localhost:5000
-```
-
-```bash
 npm run dev    # starts on port 5173
 ```
 
-### 4. Open the app
+Visit: http://localhost:5173
 
-Go to http://localhost:5173
-
+### Roles on First Login
 - Register as **Admin** to create projects
 - Register as **Manager** to manage cards
 - Register as **Developer** to create and view cards
@@ -235,23 +246,11 @@ Go to http://localhost:5173
 
 ---
 
-## 🐳 Docker & Local Development
+## 🐳 Production Deployment
 
-### Development (Local)
-```bash
-# Terminal 1: Backend with MongoDB
-docker-compose up
+### Docker Build
 
-# Terminal 2: Frontend
-cd client
-npm run dev
-```
-
-Visit: http://localhost:5173
-
-### Production (Docker)
-
-**Build:**
+**Build image:**
 ```bash
 docker build -t collabboard .
 ```
@@ -272,11 +271,8 @@ docker run -p 5000:5000 \
   collabboard
 ```
 
----
+### Deploy to Render.com
 
-## 🚀 Deployment (Render.com)
-
-### Steps
 1. Push code to GitHub
 2. Create new service on [Render.com](https://render.com)
 3. Connect your GitHub repository
