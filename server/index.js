@@ -22,7 +22,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
-connectDB();
 
 const app = express();
 const httpServer = createServer(app);
@@ -112,13 +111,24 @@ io.on("connection", (socket) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-httpServer.listen(PORT, () => {
-  const url = process.env.CLIENT_URL || `http://localhost:${PORT}`;
 
-  console.log("\n🚀 CollabBoard Server Started...");
-  console.log(`🌐 App running at: ${url}`);
-  console.log(`📡 API available at: ${url}/api`);
-  console.log(`🔌 Socket.IO ready`);
-  console.log(`⚙️ Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log("=====================================\n");
-});
+// Start server
+(async () => {
+  try {
+    await connectDB();
+
+    httpServer.listen(PORT, () => {
+      const url = process.env.CLIENT_URL || `http://localhost:${PORT}`;
+
+      console.log("\n🚀 CollabBoard Server Started...");
+      console.log(`🌐 App running at: ${url}`);
+      console.log(`📡 API available at: ${url}/api`);
+      console.log(`🔌 Socket.IO ready`);
+      console.log(`⚙️ Environment: ${process.env.NODE_ENV || "development"}`);
+      console.log("=====================================\n");
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    process.exit(1);
+  }
+})();
