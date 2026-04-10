@@ -115,20 +115,22 @@ const PORT = process.env.PORT || 5000;
 // Start server
 (async () => {
   try {
+    console.log("Starting server...");
     await connectDB();
-
-    httpServer.listen(PORT, () => {
-      const url = process.env.CLIENT_URL || `http://localhost:${PORT}`;
-
-      console.log("\n🚀 CollabBoard Server Started...");
-      console.log(`🌐 App running at: ${url}`);
-      console.log(`📡 API available at: ${url}/api`);
-      console.log(`🔌 Socket.IO ready`);
-      console.log(`⚙️ Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log("=====================================\n");
-    });
+    console.log("Database connected successfully!");
   } catch (error) {
-    console.error("Failed to start server:", error.message);
-    process.exit(1);
+    console.error("⚠️ Database connection failed:", error.message);
+    console.log("Server will continue without database...");
   }
+
+  httpServer.listen(PORT, () => {
+    const url = process.env.CLIENT_URL || `http://localhost:${PORT}`;
+
+    console.log("\n🚀 CollabBoard Server Started...");
+    console.log(`🌐 App running at: ${url}`);
+    console.log(`📡 API available at: ${url}/api`);
+    console.log(`🔌 Socket.IO ready`);
+    console.log(`⚙️ Environment: ${process.env.NODE_ENV || "development"}`);
+    console.log("=====================================\n");
+  });
 })();
