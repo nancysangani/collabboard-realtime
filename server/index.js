@@ -15,6 +15,11 @@ import {
 } from "./socket/boardSocket.js";
 import { errorHandler } from "./utils/errorHandler.js";
 import logger from "./utils/logger.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 connectDB();
@@ -24,7 +29,7 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: true,
     credentials: true,
   },
 });
@@ -34,9 +39,15 @@ io.use(verifySocketToken);
 
 // Security middleware
 app.use(helmet());
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.CLIENT_URL,
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
@@ -68,14 +79,26 @@ app.use("/api/cards", cardRoutes);
 
 app.get("/api/health", (_, res) => res.json({ status: "ok" }));
 
+// Serve React build (production)
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(
+      path.resolve(__dirname, "../client/dist/index.html")
+    );
+  });
+}
+
 // Socket.io
 io.on("connection", (socket) => {
   logger.info(`Socket connected: ${socket.id}`);
-  registerBoardSocket(io, socket);
-});
 
-io.on("disconnect", (socket) => {
-  logger.info(`Socket disconnected: ${socket.id}`);
+  registerBoardSocket(io, socket);
+
+  socket.on("disconnect", () => {
+    logger.info(`Socket disconnected: ${socket.id}`);
+  });
 });
 
 // Global error handler (must be last)
@@ -83,6 +106,12 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
-  logger.info(`✓ Server running on http://localhost:${PORT}`);
-  logger.info(`✓ Environment: ${process.env.NODE_ENV || "development"}`);
+  const url = process.env.CLIENT_URL || `http://localhost:${PORT}`;
+
+  console.log("\n🚀 CollabBoard Server Started...");
+  console.log(`🌐 App running at: ${url}`);
+  console.log(`📡 API available at: ${url}/api`);
+  console.log(`🔌 Socket.IO ready`);
+  console.log(`⚙️ Environment: ${process.env.NODE_ENV || "development"}`);
+  console.log("=====================================\n");
 });
