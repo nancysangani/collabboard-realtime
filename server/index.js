@@ -114,13 +114,21 @@ const PORT = process.env.PORT || 5000;
 
 // Start server
 (async () => {
+  process.on("uncaughtException", (error) => {
+    console.error("❌ Uncaught Exception:", error);
+  });
+
+  process.on("unhandledRejection", (reason, promise) => {
+    console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
+  });
+
   try {
-    console.log("Starting server...");
+    console.log("🔄 Starting server...");
     await connectDB();
-    console.log("Database connected successfully!");
+    console.log("✅ Database connected successfully!");
   } catch (error) {
     console.error("⚠️ Database connection failed:", error.message);
-    console.log("Server will continue without database...");
+    console.log("⚠️ Server will continue without database...");
   }
 
   httpServer.listen(PORT, () => {
